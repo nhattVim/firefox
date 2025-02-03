@@ -74,6 +74,17 @@
         display: none !important;
     }
 
+    .logo {
+        background: url("../icons/foxlogo.svg") no-repeat !important;
+        background-size: cover !important;
+        max-height: 70px !important;
+        max-width: 70px !important;
+        opacity: var(--logo-wordmark-visibility) !important;
+        display: var(--logo-wordmark-display) !important;
+        -moz-context-properties: fill !important;
+        fill: var(--general-color) !important;
+    }
+
     .search-handoff-button {
         border-radius: 100px !important;
         backdrop-filter: blur(var(--blur-radius));
