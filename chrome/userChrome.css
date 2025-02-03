@@ -1,0 +1,23 @@
+/* ############# Required files ############## */
+
+@import url("modules/root.css");
+@import url("modules/root-personal.css");
+@import url("modules/toolbar-icons.css");
+@import url("modules/containers.css");
+@import url("modules/tabs-bar.css");
+@import url("modules/urlbar-searchbar.css");
+@import url("modules/windows-controls.css");
+@import url("modules/customize-styles.css");
+@import url("modules/sound.css");
+@import url("modules/arrowpanel.css");
+@import url("modules/contextual-menu.css");
+@import url("modules/notifications.css");
+@import url("modules/close-button.css");
+@import url("modules/button-styles.css");
+@import url("modules/library.css");
+@import url("modules/hamburger-menu-icons.css");
+@import url("modules/menu.css");
+@import url("modules/left-sidebar.css");
+@import url("modules/tree-tabs.css");
+@import url("modules/optional-features.css");
+@import url("modules/tricks.css");
