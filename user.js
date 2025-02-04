@@ -34,4 +34,4 @@ user_pref("devtools.debugger.prompt-connection", false);
 
 // Settings
 user_pref("firefoxone.selected_tab_gradient_border", true);
-user_pref("firefoxone.image_in_menus", true);
+user_pref("firefoxone.image_in_menus", false);

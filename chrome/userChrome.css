@@ -6,6 +6,8 @@
 @import url("modules/containers.css");
 @import url("modules/tabs-bar.css");
 @import url("modules/urlbar-searchbar.css");
+/* @import url("modules/floating-search.css"); */
+@import url("modules/findbar.css");
 @import url("modules/windows-controls.css");
 @import url("modules/customize-styles.css");
 @import url("modules/sound.css");
