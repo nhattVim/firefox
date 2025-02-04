@@ -26,11 +26,11 @@
 
     /* Wallpaper */
     :root[lwt-newtab-brighttext] body {
-        background-image: url("../imgs/dark.jpg") !important;
+        background-image: url("imgs/dark.jpg") !important;
     }
 
     :root:not([lwt-newtab-brighttext]) body {
-        background-image: url("../imgs/light.jpg") !important;
+        background-image: url("imgs/light.jpg") !important;
     }
 
     /* Search engine */
@@ -75,7 +75,7 @@
     }
 
     .logo {
-        background: url("../icons/foxlogo.svg") no-repeat !important;
+        background: url("icons/foxlogo.svg") no-repeat !important;
         background-size: cover !important;
         max-height: 70px !important;
         max-width: 70px !important;
