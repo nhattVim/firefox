@@ -1,3 +1,7 @@
+/* # ============================================================================== # */
+/* # Theme                                                                          # */
+/* # ============================================================================== # */
+
 @media (prefers-color-scheme: dark) {
     :root[brighttext],
     :root[lwt-toolbar-field-focus-brighttext],
@@ -34,57 +38,9 @@
     }
 }
 
-.tab-icon-image {
-    filter: grayscale(100%) !important;
-}
-
-/* Menu button */
-#PanelUI-button {
-    -moz-box-ordinal-group: 0 !important;
-    order: -2 !important;
-    margin: 2px !important;
-    /* display: none !important; */
-}
-
-/* Window control buttons (min, resize and close) */
-.titlebar-buttonbox-container {
-    display: none !important;
-    margin-right: 12px !important;
-}
-
-/* Page back and foward buttons */
-#back-button,
-#forward-button {
-    display: none !important;
-}
-
-/* Extension name inside URL bar */
-#identity-box.extensionPage #identity-icon-label {
-    visibility: collapse !important;
-}
-
-/* All tabs (v-like) button */
-#alltabs-button {
-    display: none !important;
-}
-
-/* URL bar icons */
-#identity-permission-box,
-#star-button-box,
-#identity-icon-box,
-#picture-in-picture-button,
-#tracking-protection-icon-container,
-#reader-mode-button,
-#translations-button {
-    display: none !important;
-}
-
-/* "This time search with:..." */
-#urlbar .search-one-offs {
-    display: none !important;
-}
-
-/* --- ~END~ element visibility section --- */
+/* # ============================================================================== # */
+/* # Layout                                                                         # */
+/* # ============================================================================== # */
 
 /* Navbar size calc */
 :root {
@@ -162,6 +118,65 @@
     #nav-bar {
         transition: margin-top 0.25s !important;
     }
+}
+
+/* # ============================================================================== # */
+/* # Customization                                                                  # */
+/* # ============================================================================== # */
+
+/* Tab icon */
+.tab-icon-image {
+    content: url("icons/foxlogofavicon.svg");
+    fill: var(--lwt-tab-text) !important;
+}
+
+tab:not([selected]) .tab-icon-image {
+    opacity: 0.9 !important;
+}
+
+/* Menu button */
+#PanelUI-button {
+    -moz-box-ordinal-group: 0 !important;
+    order: -2 !important;
+    margin: 2px !important;
+    margin-right: 0px !important;
+}
+
+/*  Removes annoying buttons and spaces */
+#firefox-view-button,
+#save-to-pocket-button,
+.titlebar-spacer[type="pre-tabs"],
+.titlebar-spacer[type="post-tabs"] {
+    display: none !important;
+}
+#tabbrowser-tabs {
+    border-inline-start-width: 0 !important;
+}
+
+/* Extension name inside URL bar */
+#identity-box.extensionPage #identity-icon-label {
+    visibility: collapse !important;
+}
+
+/* All tabs (v-like) button */
+#alltabs-button {
+    display: none !important;
+}
+
+/* URL bar icons */
+#identity-permission-box,
+#star-button-box,
+#identity-icon-box,
+#picture-in-picture-button,
+#tracking-protection-icon-container,
+#reader-mode-button,
+#translations-button {
+    display: none !important;
+}
+
+/* "This time search with:..." */
+#urlbar .search-one-offs {
+    display: none !important;
 }
 
 #nav-bar,
@@ -242,4 +257,49 @@
     background: none !important;
     cursor: pointer;
     display: -moz-box !important;
+}
+
+/* Window control buttons (min, resize and close) */
+:root[lwt-newtab-brighttext] {
+    --titlebar-bg-color: #333333 !important;
+}
+
+:root:not([lwt-newtab-brighttext]) {
+    --titlebar-bg-color: #cccccc !important;
+}
+
+.titlebar-buttonbox {
+    margin-right: 20px;
+}
+
+.titlebar-button {
+    padding: 7px !important;
+    min-height: 15px !important;
+    min-width: 15px !important;
+    align-self: center;
+    background-color: var(--titlebar-bg-color) !important;
+    margin-left: 10px !important;
+    border-radius: 50px;
+    transition: all 100ms;
+}
+
+.titlebar-button > image {
+    visibility: collapse !important;
+}
+
+.titlebar-button:hover {
+    min-height: 25px !important;
+}
+
+.titlebar-min:hover {
+    background-color: #15c782 !important;
+}
+
+.titlebar-max:hover,
+.titlebar-restore:hover {
+    background-color: #fbbf24 !important;
+}
+
+.titlebar-close:hover {
+    background-color: #fc1a70 !important;
 }
