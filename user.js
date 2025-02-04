@@ -31,7 +31,3 @@ user_pref("privacy.userContext.longPressBehavior", 2);
 user_pref("devtools.chrome.enabled", true);
 user_pref("devtools.debugger.remote-enabled", true);
 user_pref("devtools.debugger.prompt-connection", false);
-
-// Settings
-user_pref("firefoxone.selected_tab_gradient_border", true);
-user_pref("firefoxone.image_in_menus", false);
