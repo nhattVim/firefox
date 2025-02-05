@@ -125,7 +125,8 @@
 /* # ============================================================================== # */
 
 /* Tab icon */
-.tab-icon-image {
+.tab-icon-image[src="chrome://branding/content/icon32.png"]
+{
     content: url("icons/foxlogofavicon.svg");
     fill: var(--lwt-tab-text) !important;
 }
