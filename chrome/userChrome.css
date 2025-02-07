@@ -94,7 +94,7 @@
 .browserContainer,
 .browserStack,
 #browser {
-    background-color: var(--lwt-frame) !important;
+    background-color: var(--lwt-accent-color) !important;
 }
 
 #browser:not(.browser-toolbox-background) {
@@ -105,9 +105,8 @@
 }
 
 :root:not([sizemode="fullscreen"]) .browserStack > browser {
-    background-color: var(--lwt-frame) !important;
     border-radius: 6px !important;
-    outline: 1px solid var(--content-border-color) !important;
+    outline: 1px solid var(--arrowpanel-border-color) !important;
     outline-offset: -1px !important;
     clip-path: xywh(0 0 100% 100% round 2px);
 }
