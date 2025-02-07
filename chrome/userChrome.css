@@ -84,6 +84,34 @@
 /* # Customization                                                                  # */
 /* # ============================================================================== # */
 
+/* New space around web content */
+
+:root:not([sizemode="fullscreen"]) #tabbrowser-tabbox {
+    padding-block: 1px 4px !important;
+    padding-inline: 4px !important;
+}
+
+.browserContainer,
+.browserStack,
+#browser {
+    background-color: var(--lwt-frame) !important;
+}
+
+#browser:not(.browser-toolbox-background) {
+    :root[lwtheme] & {
+        background-color: var(--lwt-accent-color);
+        background-image: none !important;
+    }
+}
+
+:root:not([sizemode="fullscreen"]) .browserStack > browser {
+    background-color: var(--lwt-frame) !important;
+    border-radius: 6px !important;
+    outline: 1px solid var(--content-border-color) !important;
+    outline-offset: -1px !important;
+    clip-path: xywh(0 0 100% 100% round 2px);
+}
+
 /* Tab icon */
 .tab-icon-image[src="chrome://branding/content/icon32.png"]
 {
