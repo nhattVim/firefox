@@ -31,3 +31,6 @@ user_pref("privacy.userContext.longPressBehavior", 2);
 user_pref("devtools.chrome.enabled", true);
 user_pref("devtools.debugger.remote-enabled", true);
 user_pref("devtools.debugger.prompt-connection", false);
+
+// Disable Alt key menu on firefox
+user_pref("ui.key.menuAccessKeyFocuses", false);
