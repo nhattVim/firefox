@@ -130,6 +130,12 @@ tab:not([selected]) .tab-icon-image {
     margin-right: 0px !important;
 }
 
+/* Resize button position */
+#back-button,
+#PanelUI-menu-button {
+    padding: 0px 2px !important;
+}
+
 /*  Removes annoying buttons and spaces */
 #firefox-view-button,
 #save-to-pocket-button,
