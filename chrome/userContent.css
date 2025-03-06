@@ -57,13 +57,8 @@
         background: var(--tr-hov-col) !important;
     }
 
-    .top-site-outer,
-    .top-site-inner {
-        & > a {
-            padding: 0 !important;
-        }
-
-        padding: 5px;
+    .top-site-outer {
+        margin: 0px 10px;
     }
 
     .top-site-button {
