@@ -297,3 +297,7 @@ tab:not([selected]) .tab-icon-image {
 .titlebar-close:hover {
     background-color: #fc1a70 !important;
 }
+
+#urlbar-searchmode-switcher {
+    display: none !important;
+}
