@@ -1,19 +1,16 @@
 /* new Tab */
 @-moz-document url("about:home"), url("about:newtab") {
+
     /* accent color */
     :root {
         --shy-color: #3584e4;
         --blur-radius: 10px;
-        --tr-col: color-mix(
-            in srgb,
-            var(--newtab-background-color) 40%,
-            transparent
-        );
-        --tr-hov-col: color-mix(
-            in srgb,
-            var(--tr-col) 80%,
-            var(--newtab-text-primary-color)
-        );
+        --tr-col: color-mix(in srgb,
+                var(--newtab-background-color) 40%,
+                transparent);
+        --tr-hov-col: color-mix(in srgb,
+                var(--tr-col) 80%,
+                var(--newtab-text-primary-color));
     }
 
     /* layout */
@@ -36,8 +33,7 @@
     /* Search engine */
     .search-wrapper.fake-focus:not(.search.disabled) .search-handoff-button {
         border: 1px solid var(--shy-color) !important;
-        box-shadow: 0 0 0 2px
-            color-mix(in srgb, var(--shy-color) 20%, transparent) !important;
+        box-shadow: 0 0 0 2px color-mix(in srgb, var(--shy-color) 20%, transparent) !important;
     }
 
     .tile,
@@ -45,6 +41,7 @@
         background-color: transparent !important;
         box-shadow: none !important;
         border: none !important;
+        border-radius: 8px !important;
     }
 
     .top-site-button,
@@ -59,14 +56,26 @@
 
     .top-site-outer {
         margin: 0px 10px;
+        width: 100px !important;
     }
 
     .top-site-button {
         border-radius: 8px !important;
+        padding: 20px 16px 0px !important;
     }
 
     .top-site-outer:not(:hover) .icon-pin-small {
         display: none !important;
+    }
+
+    .shortcuts-refresh .top-site-outer .icon-pin-small {
+        inset-block-start: -0.5rem !important;
+        inset-inline-start: -0.5rem !important;
+    }
+
+    .shortcuts-refresh .top-site-outer .context-menu-button {
+        inset-inline-end: 5px !important;
+        inset-block-start: 5px !important;
     }
 
     .logo {
@@ -94,13 +103,11 @@
     .title {
         border-bottom-right-radius: 8px !important;
         border-bottom-left-radius: 8px !important;
-        background-color: color-mix(
-            in srgb,
-            var(--tr-col) 90%,
-            var(--newtab-text-primary-color)
-        );
+        background-color: color-mix(in srgb,
+                var(--tr-col) 90%,
+                var(--newtab-text-primary-color));
 
-        & > span {
+        &>span {
             padding-left: 8px;
             padding-right: 8px;
         }
@@ -140,7 +147,7 @@
             padding: 20px 0 30px !important;
         }
 
-        .outer-wrapper > main {
+        .outer-wrapper>main {
             margin-top: 0px !important;
         }
     }
