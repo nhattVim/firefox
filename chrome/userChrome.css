@@ -305,3 +305,116 @@ tab:not([selected]) .tab-icon-image {
 #pageAction-urlbar-_036a55b4-5e72-4d05-a06c-cba2dfcc134a_ {
     display: none !important;
 }
+
+/*  floating findbar  */
+findbar {
+    --findbar-pad: 10px;
+    --fndbr-btn-wdt: 30px;
+    --findbar-wdt: 50vw;
+
+    position: fixed !important;
+    z-index: 1000 !important;
+
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%) !important;
+
+    padding-top: 40px !important;
+    height: 80px !important;
+    width: var(--findbar-wdt);
+
+    background: #13121c !important;
+    color: white !important;
+
+    border: 1px solid #2b2b3c !important;
+    outline: 1px solid #7c65d4 !important;
+    border-radius: var(--tab-border-radius) !important;
+
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4) !important;
+    transition: all 0.25s ease-out !important;
+
+    /* input field */
+    .findbar-textbox {
+        position: absolute;
+        top: var(--findbar-pad);
+        left: var(--findbar-pad);
+        width: calc(var(--findbar-wdt) - var(--findbar-pad) * 2.5 - var(--fndbr-btn-wdt) * 3) !important;
+        height: 24px !important;
+        padding: 4px 8px !important;
+
+        color: #e0e0ff !important;
+        background: #1b1b2a !important;
+        border: 1px solid #514480 !important;
+        border-radius: var(--tab-border-radius) !important;
+
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    /* focus effect for input */
+    .findbar-textbox:focus {
+        border-color: #7c65d4 !important;
+        outline: none !important;
+        background: #202030 !important;
+    }
+
+    /* buttons layout */
+    .findbar-closebutton,
+    .findbar-find-next,
+    .findbar-find-previous {
+        position: absolute;
+        top: var(--findbar-pad);
+        margin-inline-start: 0px !important;
+        margin-inline-end: 0px !important;
+    }
+
+    .findbar-closebutton {
+        right: var(--findbar-pad);
+    }
+
+    .findbar-find-next {
+        right: calc(var(--fndbr-btn-wdt) + var(--findbar-pad) / 2);
+    }
+
+    .findbar-find-previous {
+        right: calc(var(--fndbr-btn-wdt) * 2 + var(--findbar-pad) / 2);
+    }
+
+    /* hide find status */
+    .findbar-find-status {
+        display: none;
+    }
+}
+
+/*  Override findbar color for light mode  */
+@media (prefers-color-scheme: light) {
+    findbar {
+        background: #f8f8fb !important;
+        color: #1a1a1a !important;
+
+        border: 1px solid #ccc !important;
+        outline: 1px solid #7a87d9 !important;
+
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15) !important;
+    }
+
+    findbar .findbar-textbox {
+        color: #1a1a1a !important;
+        background: #ffffff !important;
+        border: 2px solid #a6a6cc !important;
+    }
+
+    findbar .findbar-textbox:focus {
+        border-color: #5c6ee0 !important;
+        background: #f0f4ff !important;
+    }
+}
+
+/*  Handle when findbar is hidden  */
+findbar[hidden] {
+    margin-bottom: unset !important;
+    transition-delay: unset !important;
+    visibility: visible !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    bottom: 0px;
+}
