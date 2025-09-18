@@ -277,6 +277,10 @@ tab:not([selected]) .tab-icon-image {
     transition: all 100ms;
 }
 
+.titlebar-button::before {
+    content: none !important
+}
+
 .titlebar-button > image {
     visibility: collapse !important;
 }
@@ -414,6 +418,11 @@ findbar[hidden] {
     margin-bottom: unset !important;
     transition-delay: unset !important;
     visibility: visible !important;
+
+/* Hide this button */
+#taskbar-tabs-button {
+    display: none !important;
+}
     opacity: 0 !important;
     pointer-events: none !important;
     bottom: 0px;
