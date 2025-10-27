@@ -1,3 +1,8 @@
+// Enable DevTools on firefox
+user_pref("devtools.chrome.enabled", true);
+user_pref("devtools.debugger.remote-enabled", true);
+user_pref("devtools.debugger.prompt-connection", false);
+
 // Optimized user.js for Firefox
 // Based on Betterfox + Custom Performance Tweaks
 // Last updated: 2025-08-03
