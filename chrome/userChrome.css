@@ -418,12 +418,12 @@ findbar[hidden] {
     margin-bottom: unset !important;
     transition-delay: unset !important;
     visibility: visible !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    bottom: 0px;
+}
 
 /* Hide this button */
 #taskbar-tabs-button {
     display: none !important;
-}
-    opacity: 0 !important;
-    pointer-events: none !important;
-    bottom: 0px;
 }
