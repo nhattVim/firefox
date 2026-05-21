@@ -111,6 +111,18 @@
     clip-path: xywh(0 0 100% 100% round 2px);
 }
 
+/* Hide tab bar indicator */
+:root:not([privatebrowsingmode]) :is(toolbarbutton, toolbarpaletteitem),
+:root[privatebrowsingmode]
+    :is(
+        toolbarbutton:not(#firefox-view-button),
+        toolbarpaletteitem:not(#wrapper-firefox-view-button)
+    ) {
+    & ~ #tabbrowser-tabs[orient="horizontal"]::before {
+        display: none !important;
+    }
+}
+
 /* Tab icon */
 .tab-icon-image[src="chrome://branding/content/icon32.png"]
 {
