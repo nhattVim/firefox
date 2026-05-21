@@ -254,12 +254,16 @@ tab:not([selected]) .tab-icon-image {
 }
 
 /* Window control buttons (min, resize and close) */
-:root[lwt-newtab-brighttext] {
-    --titlebar-bg-color: #333333 !important;
+@media (prefers-color-scheme: dark) {
+    :root {
+        --titlebar-bg-color: #333333 !important;
+    }
 }
 
-:root:not([lwt-newtab-brighttext]) {
-    --titlebar-bg-color: #cccccc !important;
+@media (prefers-color-scheme: light) {
+    :root {
+        --titlebar-bg-color: #cccccc !important;
+    }
 }
 
 .titlebar-buttonbox {
