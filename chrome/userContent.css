@@ -1,24 +1,19 @@
 /* new Tab */
 @-moz-document url("about:home"), url("about:newtab") {
-
     /* accent color */
     :root {
         --shy-color: #3584e4;
         --blur-radius: 10px;
-        --tr-col: color-mix(in srgb,
-                var(--newtab-background-color) 40%,
-                transparent);
-        --tr-hov-col: color-mix(in srgb,
-                var(--tr-col) 80%,
-                var(--newtab-text-primary-color));
-    }
-
-    /* layout */
-    main {
-        margin-top: 8% !important;
-        height: 50%;
-        background-color: var(--tr-col);
-        border-radius: 10px;
+        --tr-col: color-mix(
+            in srgb,
+            var(--newtab-background-color) 40%,
+            transparent
+        );
+        --tr-hov-col: color-mix(
+            in srgb,
+            var(--tr-col) 80%,
+            var(--newtab-text-primary-color)
+        );
     }
 
     /* Wallpaper */
@@ -33,7 +28,8 @@
     /* Search engine */
     .search-wrapper.fake-focus:not(.search.disabled) .search-handoff-button {
         border: 1px solid var(--shy-color) !important;
-        box-shadow: 0 0 0 2px color-mix(in srgb, var(--shy-color) 20%, transparent) !important;
+        box-shadow: 0 0 0 2px
+            color-mix(in srgb, var(--shy-color) 20%, transparent) !important;
     }
 
     .tile,
@@ -60,8 +56,13 @@
     }
 
     .top-site-button {
+        grid-template-columns: 1fr !important;
         border-radius: 8px !important;
-        padding: 20px 16px 0px !important;
+        padding: 20px 0px 0px !important;
+    }
+
+    .title.has-icon.pinned .title-label {
+        width: 100% !important;
     }
 
     .top-site-outer:not(:hover) .icon-pin-small {
@@ -103,11 +104,13 @@
     .title {
         border-bottom-right-radius: 8px !important;
         border-bottom-left-radius: 8px !important;
-        background-color: color-mix(in srgb,
-                var(--tr-col) 90%,
-                var(--newtab-text-primary-color));
+        background-color: color-mix(
+            in srgb,
+            var(--tr-col) 90%,
+            var(--newtab-text-primary-color)
+        );
 
-        &>span {
+        & > span {
             padding-left: 8px;
             padding-right: 8px;
         }
@@ -147,7 +150,7 @@
             padding: 20px 0 30px !important;
         }
 
-        .outer-wrapper>main {
+        .outer-wrapper > main {
             margin-top: 0px !important;
         }
     }
