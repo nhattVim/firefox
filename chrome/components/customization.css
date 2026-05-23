@@ -1,0 +1,196 @@
+/* New space around web content */
+
+:root:not([sizemode="fullscreen"]) #tabbrowser-tabbox {
+    padding-block: 1px 4px !important;
+    padding-inline: 4px !important;
+}
+
+.browserContainer,
+.browserStack,
+#browser {
+    background-color: var(--lwt-accent-color) !important;
+}
+
+#browser:not(.browser-toolbox-background) {
+    :root[lwtheme] & {
+        background-color: var(--lwt-accent-color);
+        background-image: none !important;
+    }
+}
+
+:root:not([sizemode="fullscreen"]) .browserStack > browser {
+    border-radius: 6px !important;
+    outline: 1px solid var(--arrowpanel-border-color) !important;
+    outline-offset: -1px !important;
+    clip-path: xywh(0 0 100% 100% round 2px);
+}
+
+/* Hide tab bar indicator */
+:root:not([privatebrowsingmode]) :is(toolbarbutton, toolbarpaletteitem),
+:root[privatebrowsingmode]
+    :is(
+        toolbarbutton:not(#firefox-view-button),
+        toolbarpaletteitem:not(#wrapper-firefox-view-button)
+    ) {
+    & ~ #tabbrowser-tabs[orient="horizontal"]::before {
+        display: none !important;
+    }
+}
+
+/* Tab icon */
+.tab-icon-image[src="chrome://branding/content/icon32.png"] {
+    content: url("icons/foxlogofavicon.svg");
+    fill: var(--lwt-tab-text) !important;
+}
+
+tab:not([selected]) .tab-icon-image {
+    opacity: 0.9 !important;
+}
+
+/* Menu button */
+#PanelUI-button {
+    -moz-box-ordinal-group: 0 !important;
+    order: -2 !important;
+    margin: 2px !important;
+    margin-right: 0px !important;
+}
+
+/* Resize button position */
+#back-button,
+#PanelUI-menu-button {
+    padding: 0px 2px !important;
+}
+
+/*  Removes annoying buttons and spaces */
+#firefox-view-button,
+#save-to-pocket-button,
+.titlebar-spacer[type="pre-tabs"],
+.titlebar-spacer[type="post-tabs"] {
+    display: none !important;
+}
+#tabbrowser-tabs {
+    border-inline-start-width: 0 !important;
+}
+
+/* Extension name inside URL bar */
+#identity-box.extensionPage #identity-icon-label {
+    visibility: collapse !important;
+}
+
+/* All tabs (v-like) button */
+#alltabs-button {
+    display: none !important;
+}
+
+/* URL bar icons */
+#identity-permission-box,
+#star-button-box,
+#identity-icon-box,
+#picture-in-picture-button,
+#tracking-protection-icon-container,
+#reader-mode-button,
+#translations-button {
+    display: none !important;
+}
+
+/* "This time search with:..." */
+#urlbar .search-one-offs {
+    display: none !important;
+}
+
+#nav-bar,
+#PersonalToolbar {
+    background-color: #0000 !important;
+    background-image: none !important;
+    box-shadow: none !important;
+}
+#nav-bar {
+    margin-left: 3px;
+}
+.tab-background,
+.tab-stack {
+    min-height: calc(var(--TabsHeight) * 1px) !important;
+}
+
+/*  Removes urlbar border/background  */
+#urlbar-background {
+    border: none !important;
+    outline: none !important;
+    transition: 0.15s !important;
+}
+
+/*  Removes the background from the urlbar while not in use  */
+#urlbar:not(:hover):not([breakout][breakout-extend]) > #urlbar-background {
+    box-shadow: none !important;
+    background: #0000 !important;
+}
+
+/*  Removes annoying border  */
+#navigator-toolbox {
+    border: none !important;
+}
+
+/* Fades window while not in focus */
+#navigator-toolbox-background:-moz-window-inactive {
+    filter: contrast(90%);
+}
+
+/* Remove fullscreen warning border */
+#fullscreen-warning {
+    border: none !important;
+    background: -moz-Dialog !important;
+}
+
+/*  Tabs close button  */
+.tabbrowser-tab:not(:hover) .tab-close-button {
+    opacity: 0% !important;
+    transition: 0.3s !important;
+    display: -moz-box !important;
+}
+
+.tab-close-button[selected]:not(:hover) {
+    opacity: 45% !important;
+    transition: 0.3s !important;
+    display: -moz-box !important;
+}
+
+.tabbrowser-tab:hover .tab-close-button {
+    opacity: 50%;
+    transition: 0.3s !important;
+    background: none !important;
+    cursor: pointer;
+    display: -moz-box !important;
+}
+
+.tab-close-button:hover {
+    opacity: 100% !important;
+    transition: 0.3s !important;
+    background: none !important;
+    cursor: pointer;
+    display: -moz-box !important;
+}
+
+.tab-close-button[selected]:hover {
+    opacity: 100% !important;
+    transition: 0.3s !important;
+    background: none !important;
+    cursor: pointer;
+    display: -moz-box !important;
+}
+
+/* Hide taskbar tabs button */
+#taskbar-tabs-button {
+    display: none !important;
+}
+
+#urlbar-searchmode-switcher {
+    display: none !important;
+}
+
+#pageAction-urlbar-_036a55b4-5e72-4d05-a06c-cba2dfcc134a_ {
+    display: none !important;
+}
+
+.searchmode-switcher {
+    display: none !important;
+}

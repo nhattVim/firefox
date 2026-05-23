@@ -1,0 +1,52 @@
+/* Window control buttons (min, resize and close) */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --titlebar-bg-color: #333333 !important;
+    }
+}
+
+@media (prefers-color-scheme: light) {
+    :root {
+        --titlebar-bg-color: #cccccc !important;
+    }
+}
+
+.titlebar-buttonbox {
+    margin-right: 20px;
+}
+
+.titlebar-button {
+    padding: 7px !important;
+    min-height: 15px !important;
+    min-width: 15px !important;
+    align-self: center;
+    background-color: var(--titlebar-bg-color) !important;
+    margin-left: 10px !important;
+    border-radius: 50px;
+    transition: all 100ms;
+}
+
+.titlebar-button::before {
+    content: none !important;
+}
+
+.titlebar-button > image {
+    visibility: collapse !important;
+}
+
+.titlebar-button:hover {
+    min-height: 25px !important;
+}
+
+.titlebar-min:hover {
+    background-color: #15c782 !important;
+}
+
+.titlebar-max:hover,
+.titlebar-restore:hover {
+    background-color: #fbbf24 !important;
+}
+
+.titlebar-close:hover {
+    background-color: #fc1a70 !important;
+}

@@ -1,0 +1,94 @@
+/* Custom variables for focused urlbar */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --urlbar-focused-bg: rgba(19, 18, 28, 0.95) !important;
+        --urlbar-focused-backdrop: rgba(0, 0, 0, 0.5) !important;
+        --urlbar-focused-border: rgba(124, 101, 212, 0.4) !important;
+        --urlbar-results-border: rgba(255, 255, 255, 0.08) !important;
+    }
+}
+
+@media (prefers-color-scheme: light) {
+    :root {
+        --urlbar-focused-bg: rgba(248, 248, 251, 0.95) !important;
+        --urlbar-focused-backdrop: rgba(0, 0, 0, 0.2) !important;
+        --urlbar-focused-border: rgba(122, 135, 217, 0.4) !important;
+        --urlbar-results-border: rgba(0, 0, 0, 0.08) !important;
+    }
+}
+
+/* Spotlight Slide-down & Scale-up Animation */
+@keyframes spotlightFadeIn {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-10px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0) scale(1);
+    }
+}
+
+/* Floating Urlbar Layout when focused */
+#urlbar[focused] {
+    position: fixed !important;
+    top: 15vh !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 680px !important;
+    max-width: 90vw !important;
+    z-index: 99999 !important;
+    margin: 0 !important;
+    right: unset !important;
+    bottom: unset !important;
+    animation: spotlightFadeIn 0.15s ease-out forwards;
+}
+
+#urlbar[focused] > #urlbar-background {
+    background-color: var(--urlbar-focused-bg) !important;
+    box-shadow: 
+        0 0 0 100vmax var(--urlbar-focused-backdrop), 
+        0 20px 40px rgba(0, 0, 0, 0.4) !important;
+    border: 1px solid var(--urlbar-focused-border) !important;
+    backdrop-filter: blur(20px) !important;
+    border-radius: 12px !important;
+}
+
+/* Input container size and padding inside the floating bar */
+#urlbar[focused] > #urlbar-input-container {
+    height: 48px !important;
+    padding-block: 0px !important;
+    padding-inline: 12px !important;
+}
+
+/* Increase font size slightly in floating mode */
+#urlbar[focused] .urlbar-input {
+    font-size: 16px !important;
+}
+
+/* Results panel styles */
+#urlbar-results {
+    border-top: 1px solid var(--urlbar-results-border) !important;
+    margin-top: 5px !important;
+}
+
+/* Spotlight Mode: Dim & Blur surrounding elements */
+:root:has(#urlbar[focused]) #browser,
+:root:has(#urlbar[focused]) #TabsToolbar {
+    filter: blur(6px) brightness(0.6) !important;
+}
+
+/* Dim other navigation bar elements (buttons, extensions, etc.) */
+:root:has(#urlbar[focused]) #nav-bar :is(toolbarbutton, #urlbar-container ~ *) {
+    opacity: 0.25 !important;
+}
+
+/* Smooth transitions when entering/leaving spotlight mode */
+#browser,
+#TabsToolbar {
+    transition: filter 0.15s ease-out !important;
+}
+
+#nav-bar :is(toolbarbutton, #urlbar-container ~ *) {
+    transition: opacity 0.15s ease-out !important;
+}
