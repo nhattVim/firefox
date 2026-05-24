@@ -8,11 +8,39 @@ A curated collection of tweaks, custom styles, and scripts to customize Firefox,
 
 ### Dark theme
 
-![](https://github.com/nhattruongNeoVim/assets/blob/master/firefox/1.png?raw=true)
+<!-- ![](https://github.com/nhattruongNeoVim/assets/blob/master/firefox/1.png?raw=true) -->
+
+<div align="center">
+    <table>
+        <tr>
+            <td><img src="https://github.com/nhattruongNeoVim/assets/blob/master/firefox/d1.png?raw=true"/></td>
+        </tr>
+    </table>
+    <table>
+        <tr>
+            <td><img src="https://github.com/nhattruongNeoVim/assets/blob/master/firefox/d3.png?raw=true"/></td>
+            <td><img src="https://github.com/nhattruongNeoVim/assets/blob/master/firefox/d2.png?raw=true"/></td>
+        </tr>
+    </table>
+</div>
 
 ### Light theme
 
-![](https://github.com/nhattruongNeoVim/assets/blob/master/firefox/2.png?raw=true)
+<!-- ![](https://github.com/nhattruongNeoVim/assets/blob/master/firefox/2.png?raw=true) -->
+
+<div align="center">
+    <table>
+        <tr>
+            <td><img src="https://github.com/nhattruongNeoVim/assets/blob/master/firefox/l1.png?raw=true"/></td>
+        </tr>
+    </table>
+    <table>
+        <tr>
+            <td><img src="https://github.com/nhattruongNeoVim/assets/blob/master/firefox/l3.png?raw=true"/></td>
+            <td><img src="https://github.com/nhattruongNeoVim/assets/blob/master/firefox/l2.png?raw=true"/></td>
+        </tr>
+    </table>
+</div>
 
 ---
 
