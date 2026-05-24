@@ -377,15 +377,15 @@ if ($menuChoice -eq "1") {
     $nhattPath = $nhattRoot.FullName
 
     # Copy user.js to profile root
-    if (Test-Path "$nhattPath\user.js") {
-        Copy-Item -Path "$nhattPath\user.js" -Destination "$profileDir\user.js" -Force
+    if (Test-Path "$nhattPath\src\user.js") {
+        Copy-Item -Path "$nhattPath\src\user.js" -Destination "$profileDir\user.js" -Force
         Write-Host "    -> Deployed user.js to profile root folder." -ForegroundColor Green
     }
 
-    # Copy blurNewTabUrlbar.uc.js to profile root
-    if (Test-Path "$nhattPath\blurNewTabUrlbar.uc.js") {
-        Copy-Item -Path "$nhattPath\blurNewTabUrlbar.uc.js" -Destination $jsDestDir -Force
-        Write-Host "    -> Deployed blurNewTabUrlbar.uc.js to chrome\JS\ successfully." -ForegroundColor Green
+    # Copy blurNewTabUrlbar.uc.mjs to chrome/JS/ folder
+    if (Test-Path "$nhattPath\src\blurNewTabUrlbar.uc.mjs") {
+        Copy-Item -Path "$nhattPath\src\blurNewTabUrlbar.uc.mjs" -Destination $jsDestDir -Force
+        Write-Host "    -> Deployed blurNewTabUrlbar.uc.mjs to chrome\JS\ successfully." -ForegroundColor Green
     }
 
     # Copy custom chrome contents to profile chrome/ folder
