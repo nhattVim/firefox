@@ -384,8 +384,8 @@ if ($menuChoice -eq "1") {
 
     # Copy blurNewTabUrlbar.uc.js to profile root
     if (Test-Path "$nhattPath\blurNewTabUrlbar.uc.js") {
-        Copy-Item -Path "$nhattPath\blurNewTabUrlbar.uc.js" -Destination "$profileDir\blurNewTabUrlbar.uc.js" -Force
-        Write-Host "    -> Deployed blurNewTabUrlbar.uc.js to profile root folder." -ForegroundColor Green
+        Copy-Item -Path "$nhattPath\blurNewTabUrlbar.uc.js" -Destination $jsDestDir -Force
+        Write-Host "    -> Deployed blurNewTabUrlbar.uc.js to chrome\JS\ successfully." -ForegroundColor Green
     }
 
     # Copy custom chrome contents to profile chrome/ folder
