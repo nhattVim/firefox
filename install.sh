@@ -4,7 +4,7 @@
 # Description: Customization Toolkit for Firefox - Installs AutoConfig loader,
 #              Second Sidebar, user.js, and custom chrome files with robust
 #              multi-profile support and complete uninstallation logic.
-# Author: Antigravity IDE & USER
+# Author: nhattVim
 # Language: English
 # ==============================================================================
 
@@ -111,6 +111,7 @@ get_firefox_install_dir() {
         ff_dir="${ff_dir#\"}"
         ff_dir="${ff_dir%\'}"
         ff_dir="${ff_dir#\'}"
+        ff_dir="${ff_dir%/}"
         if [[ ! -d "$ff_dir" ]]; then
             echo -e "\033[1;31m[ERROR] Directory does not exist: $ff_dir\033[0m" >&2
             exit 1
@@ -170,6 +171,7 @@ choose_profile() {
         profile_dir="${profile_dir#\"}"
         profile_dir="${profile_dir%\'}"
         profile_dir="${profile_dir#\'}"
+        profile_dir="${profile_dir%/}"
         if [[ ! -d "$profile_dir" ]]; then
             echo -e "\033[1;31m[ERROR] Directory does not exist: $profile_dir\033[0m" >&2
             exit 1
@@ -268,6 +270,7 @@ choose_profile() {
         profile_dir="${profile_dir#\"}"
         profile_dir="${profile_dir%\'}"
         profile_dir="${profile_dir#\'}"
+        profile_dir="${profile_dir%/}"
         if [[ ! -d "$profile_dir" ]]; then
             echo -e "\033[1;31m[ERROR] Directory does not exist: $profile_dir\033[0m" >&2
             exit 1
@@ -300,6 +303,7 @@ choose_profile() {
                 custom_path="${custom_path#\"}"
                 custom_path="${custom_path%\'}"
                 custom_path="${custom_path#\'}"
+                custom_path="${custom_path%/}"
                 if [[ -d "$custom_path" ]]; then
                     selection="$custom_path"
                 else
@@ -345,9 +349,11 @@ check_firefox_running
 
 # Detect installation folder
 ffDir=$(get_firefox_install_dir | tail -n 1)
+ffDir="${ffDir%/}"
 
 # Detect and choose profile
 profileDir=$(choose_profile "$ffDir" | tail -n 1)
+profileDir="${profileDir%/}"
 chromeDir="${profileDir}/chrome"
 
 # ------------------------------------------------------------------------------
@@ -450,10 +456,16 @@ if [ "$menu_choice" = "1" ]; then
         echo "    -> Merged custom chrome files into profile chrome directory."
     fi
 
-    # 4. Cleanup
-    echo -e "\n[4/4] Cleaning up temporary installation files..."
+    # 4. Cleanup & Cache Clear
+    echo -e "\n[4/4] Cleaning up temporary installation files and clearing startup cache..."
     rm -rf "$tempDir"
     echo "    -> Cleaned up temp workspace."
+
+    startupCache="${profileDir}/startupCache"
+    if [ -d "$startupCache" ]; then
+        rm -rf "$startupCache"
+        echo "    -> Cleared Firefox startup cache automatically."
+    fi
 
     # SUCCESS MESSAGE
     echo "=========================================================="
@@ -461,10 +473,8 @@ if [ "$menu_choice" = "1" ]; then
     echo "=========================================================="
     echo "Next steps to activate your customizations:"
     echo "1. Launch Firefox."
-    echo "2. Enter 'about:support' in the address bar."
-    echo "3. Click the 'Clear startup cache...' button on the top right."
-    echo "4. Firefox will restart. Your persistent custom sidebar will be active!"
-    echo "5. Click the '+' button in the sidebar dock to add Zalo, Messenger, etc."
+    echo "2. Your persistent custom sidebar will be active immediately!"
+    echo "3. Click the '+' button in the sidebar dock to add Zalo, Messenger, etc."
     echo "=========================================================="
 fi
 
@@ -509,32 +519,57 @@ if [ "$menu_choice" = "2" ]; then
         echo "    -> Removed: $chromeDir/utils"
     fi
 
-    # Remove chrome/JS/ folder
-    if [ -d "$chromeDir/JS" ]; then
-        rm -rf "$chromeDir/JS"
-        echo "    -> Removed: $chromeDir/JS"
-    fi
-
     # Remove chrome/components/ folder
     if [ -d "$chromeDir/components" ]; then
         rm -rf "$chromeDir/components"
         echo "    -> Removed: $chromeDir/components"
     fi
 
-    # Remove chrome/second_sidebar/ folder
-    if [ -d "$chromeDir/second_sidebar" ]; then
-        rm -rf "$chromeDir/second_sidebar"
-        echo "    -> Removed: $chromeDir/second_sidebar"
+    # Remove chrome/icons/ folder
+    if [ -d "$chromeDir/icons" ]; then
+        rm -rf "$chromeDir/icons"
+        echo "    -> Removed: $chromeDir/icons"
     fi
 
-    # Remove chrome/second_sidebar.uc.mjs
-    if [ -f "$chromeDir/second_sidebar.uc.mjs" ]; then
-        rm -f "$chromeDir/second_sidebar.uc.mjs"
-        echo "    -> Removed: $chromeDir/second_sidebar.uc.mjs"
+    # Remove chrome/imgs/ folder
+    if [ -d "$chromeDir/imgs" ]; then
+        rm -rf "$chromeDir/imgs"
+        echo "    -> Removed: $chromeDir/imgs"
     fi
 
-    # 3. Clear startup cache warning
+    # Remove userChrome.css and userContent.css if they exist
+    if [ -f "$chromeDir/userChrome.css" ]; then
+        rm -f "$chromeDir/userChrome.css"
+        echo "    -> Removed: $chromeDir/userChrome.css"
+    fi
+    if [ -f "$chromeDir/userContent.css" ]; then
+        rm -f "$chromeDir/userContent.css"
+        echo "    -> Removed: $chromeDir/userContent.css"
+    fi
+
+    # Remove specific JS files and directories in chrome/JS/
+    jsDir="${chromeDir}/JS"
+    if [ -d "$jsDir" ]; then
+        rm -f "$jsDir/second_sidebar.uc.mjs"
+        rm -f "$jsDir/blurNewTabUrlbar.uc.mjs"
+        rm -f "$jsDir/blurNewTabUrlbar.uc.js"
+        rm -rf "$jsDir/second_sidebar"
+        echo "    -> Removed specific customization files in: $jsDir"
+        
+        # If chrome/JS/ is empty, remove it too
+        if [ -z "$(ls -A "$jsDir")" ]; then
+            rm -rf "$jsDir"
+            echo "    -> Removed empty JS folder: $jsDir"
+        fi
+    fi
+
+    # 3. Clear startup cache automatically
     echo -e "\n[3/3] Finalizing uninstallation..."
+    startupCache="${profileDir}/startupCache"
+    if [ -d "$startupCache" ]; then
+        rm -rf "$startupCache"
+        echo "    -> Cleared Firefox startup cache automatically."
+    fi
     echo "    -> Customizations successfully removed."
 
     # SUCCESS MESSAGE
@@ -543,8 +578,6 @@ if [ "$menu_choice" = "2" ]; then
     echo "=========================================================="
     echo "To fully restore your browser state:"
     echo "1. Launch Firefox."
-    echo "2. Enter 'about:support' in the address bar."
-    echo "3. Click the 'Clear startup cache...' button on the top right."
-    echo "4. Firefox will restart, completely clean and restored to original."
+    echo "2. Firefox will restart, completely clean and restored to original."
     echo "=========================================================="
 fi

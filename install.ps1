@@ -3,7 +3,7 @@
 # Description: Customization Toolkit for Firefox - Installs AutoConfig loader,
 #              Second Sidebar, user.js, and custom chrome files with robust
 #              multi-profile support and complete uninstallation logic.
-# Author: Antigravity IDE & USER
+# Author: nhattVim
 # Language: English
 # ==============================================================================
 
@@ -146,7 +146,7 @@ function Get-FirefoxProfiles {
                     $sections += [PSCustomObject]$current
                 }
                 $current = @{}
-            } elseif ($line -match "=") {
+            } elseif ($line -match "^[^=]+=") {
                 $parts = $line.Split("=", 2)
                 $current[$parts[0]] = $parts[1]
             }
@@ -192,6 +192,20 @@ function Get-FirefoxProfiles {
     }
     
     return $profiles
+}
+
+# Helper function to check write permissions
+function Test-WritePermission {
+    param([string]$path)
+    if (-not (Test-Path $path)) { return $false }
+    try {
+        $testFile = Join-Path $path "permtest_$([Guid]::NewGuid().Guid).tmp"
+        [System.IO.File]::WriteAllText($testFile, "test")
+        Remove-Item $testFile -ErrorAction SilentlyContinue
+        return $true
+    } catch {
+        return $false
+    }
 }
 
 # Helper function to prompt user to choose a profile
@@ -264,18 +278,38 @@ Check-FirefoxRunning
 
 # Detect installation folder
 $ffDir = Get-FirefoxInstallDir
+$ffDir = $ffDir.TrimEnd('\')
 
 # Detect and choose profile
 $profiles = Get-FirefoxProfiles -ffDir $ffDir
 if ($profiles.Count -eq 0) {
     Write-Host "[WARNING] No Firefox profiles discovered automatically." -ForegroundColor Yellow
     $profileDir = Read-Host "Please enter your profile path manually"
-    $profileDir = $profileDir.Trim('"').Trim("'")
+    $profileDir = $profileDir.Trim('"').Trim("'").TrimEnd('\')
     if (-not (Test-Path $profileDir)) {
         throw "Specified profile folder does not exist: $profileDir"
     }
 } else {
     $profileDir = Choose-Profile -profiles $profiles
+    $profileDir = $profileDir.TrimEnd('\')
+}
+
+# Check Admin permissions if writing/deleting in $ffDir requires it
+$isAdmin = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+if (-not $isAdmin -and -not (Test-WritePermission $ffDir)) {
+    Write-Host "`n[INFO] Write access to Firefox installation directory ($ffDir) is protected." -ForegroundColor Yellow
+    Write-Host "Self-elevating to Administrator..." -ForegroundColor Yellow
+    Start-Sleep -Seconds 1
+    
+    $args = "-NoProfile -ExecutionPolicy Bypass"
+    if ($PSCommandPath) {
+        $args += " -File `"$PSCommandPath`""
+    } else {
+        # Running via iex
+        $args += " -Command `"irm https://raw.githubusercontent.com/nhattVim/firefox/refs/heads/main/install.ps1 | iex`""
+    }
+    Start-Process powershell -ArgumentList $args -Verb RunAs
+    exit
 }
 
 $chromeDir = Join-Path -Path $profileDir -ChildPath "chrome"
@@ -394,10 +428,16 @@ if ($menuChoice -eq "1") {
         Write-Host "    -> Merged custom chrome files into profile chrome directory." -ForegroundColor Green
     }
 
-    # 4. Cleanup
-    Write-Host "`n[4/4] Cleaning up temporary installation files..." -ForegroundColor Yellow
+    # 4. Cleanup & Cache Clear
+    Write-Host "`n[4/4] Cleaning up temporary files and clearing startup cache..." -ForegroundColor Yellow
     Remove-Item -Path $tempDir -Recurse -Force
     Write-Host "    -> Cleaned up temp workspace." -ForegroundColor Green
+    
+    $startupCache = Join-Path $profileDir "startupCache"
+    if (Test-Path $startupCache) {
+        Remove-Item $startupCache -Recurse -Force -ErrorAction SilentlyContinue
+        Write-Host "    -> Cleared Firefox startup cache automatically." -ForegroundColor Green
+    }
 
     # SUCCESS MESSAGE
     Write-Host "`n==========================================================" -ForegroundColor Cyan
@@ -405,10 +445,8 @@ if ($menuChoice -eq "1") {
     Write-Host "==========================================================" -ForegroundColor Cyan
     Write-Host "Next steps to activate your customizations:" -ForegroundColor Yellow
     Write-Host "1. Launch Firefox."
-    Write-Host "2. Enter 'about:support' in the address bar."
-    Write-Host "3. Click the 'Clear startup cache...' button on the top right."
-    Write-Host "4. Firefox will restart. Your persistent custom sidebar will be active!"
-    Write-Host "5. Click the '+' button in the sidebar dock to add Zalo, Messenger, etc."
+    Write-Host "2. Your persistent custom sidebar will be active immediately!"
+    Write-Host "3. Click the '+' button in the sidebar dock to add Zalo, Messenger, etc."
     Write-Host "==========================================================" -ForegroundColor Cyan
 }
 
@@ -450,13 +488,6 @@ elseif ($menuChoice -eq "2") {
         Write-Host "    -> Removed: $utilsDir" -ForegroundColor Gray
     }
 
-    # Remove chrome/JS/ folder
-    $jsDir = Join-Path -Path $chromeDir -ChildPath "JS"
-    if (Test-Path $jsDir) {
-        Remove-Item -Path $jsDir -Recurse -Force
-        Write-Host "    -> Removed: $jsDir" -ForegroundColor Gray
-    }
-
     # Remove chrome/components/ folder (created by the split layout tool)
     $componentsDir = Join-Path -Path $chromeDir -ChildPath "components"
     if (Test-Path $componentsDir) {
@@ -464,20 +495,69 @@ elseif ($menuChoice -eq "2") {
         Write-Host "    -> Removed: $componentsDir" -ForegroundColor Gray
     }
 
-    # Remove chrome/second_sidebar/ folder and script
-    $sidebarDir = Join-Path -Path $chromeDir -ChildPath "second_sidebar"
-    if (Test-Path $sidebarDir) {
-        Remove-Item -Path $sidebarDir -Recurse -Force
-        Write-Host "    -> Removed: $sidebarDir" -ForegroundColor Gray
-    }
-    $sidebarMjs = Join-Path -Path $chromeDir -ChildPath "second_sidebar.uc.mjs"
-    if (Test-Path $sidebarMjs) {
-        Remove-Item -Path $sidebarMjs -Force
-        Write-Host "    -> Removed: $sidebarMjs" -ForegroundColor Gray
+    # Remove chrome/icons/ folder
+    $iconsDir = Join-Path -Path $chromeDir -ChildPath "icons"
+    if (Test-Path $iconsDir) {
+        Remove-Item -Path $iconsDir -Recurse -Force
+        Write-Host "    -> Removed: $iconsDir" -ForegroundColor Gray
     }
 
-    # 3. Clear startup cache warning
+    # Remove chrome/imgs/ folder
+    $imgsDir = Join-Path -Path $chromeDir -ChildPath "imgs"
+    if (Test-Path $imgsDir) {
+        Remove-Item -Path $imgsDir -Recurse -Force
+        Write-Host "    -> Removed: $imgsDir" -ForegroundColor Gray
+    }
+
+    # Remove userChrome.css and userContent.css if they exist
+    $userChromeFile = Join-Path -Path $chromeDir -ChildPath "userChrome.css"
+    if (Test-Path $userChromeFile) {
+        Remove-Item -Path $userChromeFile -Force
+        Write-Host "    -> Removed: $userChromeFile" -ForegroundColor Gray
+    }
+    $userContentFile = Join-Path -Path $chromeDir -ChildPath "userContent.css"
+    if (Test-Path $userContentFile) {
+        Remove-Item -Path $userContentFile -Force
+        Write-Host "    -> Removed: $userContentFile" -ForegroundColor Gray
+    }
+
+    # Remove specific JS files and directories in chrome/JS/
+    $jsDir = Join-Path -Path $chromeDir -ChildPath "JS"
+    if (Test-Path $jsDir) {
+        $filesToRemove = @(
+            "second_sidebar.uc.mjs",
+            "blurNewTabUrlbar.uc.mjs",
+            "blurNewTabUrlbar.uc.js"
+        )
+        foreach ($file in $filesToRemove) {
+            $filePath = Join-Path -Path $jsDir -ChildPath $file
+            if (Test-Path $filePath) {
+                Remove-Item -Path $filePath -Force
+                Write-Host "    -> Removed: $filePath" -ForegroundColor Gray
+            }
+        }
+        
+        $sidebarDir = Join-Path -Path $jsDir -ChildPath "second_sidebar"
+        if (Test-Path $sidebarDir) {
+            Remove-Item -Path $sidebarDir -Recurse -Force
+            Write-Host "    -> Removed: $sidebarDir" -ForegroundColor Gray
+        }
+
+        # If chrome/JS/ is empty, remove it too
+        $jsContents = Get-ChildItem -Path $jsDir
+        if ($null -eq $jsContents -or $jsContents.Count -eq 0) {
+            Remove-Item -Path $jsDir -Force
+            Write-Host "    -> Removed empty JS folder: $jsDir" -ForegroundColor Gray
+        }
+    }
+
+    # 3. Clear startup cache automatically
     Write-Host "`n[3/3] Finalizing uninstallation..." -ForegroundColor Yellow
+    $startupCache = Join-Path $profileDir "startupCache"
+    if (Test-Path $startupCache) {
+        Remove-Item $startupCache -Recurse -Force -ErrorAction SilentlyContinue
+        Write-Host "    -> Cleared Firefox startup cache automatically." -ForegroundColor Green
+    }
     Write-Host "    -> Customizations successfully removed." -ForegroundColor Green
 
     # SUCCESS MESSAGE
@@ -486,8 +566,6 @@ elseif ($menuChoice -eq "2") {
     Write-Host "==========================================================" -ForegroundColor Cyan
     Write-Host "To fully restore your browser state:" -ForegroundColor Yellow
     Write-Host "1. Launch Firefox."
-    Write-Host "2. Enter 'about:support' in the address bar."
-    Write-Host "3. Click the 'Clear startup cache...' button on the top right."
-    Write-Host "4. Firefox will restart, completely clean and restored to original."
+    Write-Host "2. Firefox will restart, completely clean and restored to original."
     Write-Host "==========================================================" -ForegroundColor Cyan
 }
