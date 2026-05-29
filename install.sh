@@ -42,49 +42,71 @@ check_requirements() {
     fi
 }
 
-# Helper function to download repositories safely with fallback branches (main/master)
+# Helper function to download repositories safely with checkout branches
 download_github_repo() {
     local repo_url="$1"
     local out_file="$2"
-    local branches=("main" "master")
-    local success=false
-    
-    for branch in "${branches[@]}"; do
-        local zip_url="${repo_url}/archive/refs/heads/${branch}.zip"
-        echo " -> Attempting to download from branch '$branch'..."
-        if command -v curl >/dev/null 2>&1; then
-            if curl -fsSL -o "$out_file" "$zip_url"; then
-                success=true
-                break
-            fi
-        elif command -v wget >/dev/null 2>&1; then
-            if wget -q -O "$out_file" "$zip_url"; then
-                success=true
-                break
-            fi
-        else
-            echo -e "\033[1;31m[ERROR] Neither curl nor wget is installed.\033[0m" >&2
-            exit 1
-        fi
-    done
-    
-    if [ "$success" = false ]; then
-        echo -e "\033[1;31mFailed to download from $repo_url. Please check your network connection.\033[0m" >&2
+
+    local api_url
+    api_url=$(echo "$repo_url" | sed 's#https://github.com/#https://api.github.com/repos/#')
+
+    local default_branch=""
+
+    echo " -> Detecting default branch from GitHub API..."
+
+    if command -v curl >/dev/null 2>&1; then
+        default_branch=$(curl -fsSL "$api_url" | grep '"default_branch"' | cut -d '"' -f4)
+    elif command -v wget >/dev/null 2>&1; then
+        default_branch=$(wget -qO- "$api_url" | grep '"default_branch"' | cut -d '"' -f4)
+    else
+        echo -e "\033[1;31m[ERROR] Neither curl nor wget is installed.\033[0m" >&2
         exit 1
+    fi
+
+    # fallback if API fail
+    if [[ -z "$default_branch" ]]; then
+        echo " -> Could not detect default branch automatically. Falling back to main/master..."
+        for branch in main master; do
+            echo " -> Attempting branch '$branch'..."
+            local zip_url="${repo_url}/archive/refs/heads/${branch}.zip"
+
+            if command -v curl >/dev/null 2>&1; then
+                if curl -fsSL -o "$out_file" "$zip_url"; then
+                    return 0
+                fi
+            else
+                if wget -q -O "$out_file" "$zip_url"; then
+                    return 0
+                fi
+            fi
+        done
+
+        echo -e "\033[1;31m[ERROR] Failed to download repository.\033[0m" >&2
+        exit 1
+    fi
+
+    echo " -> Default branch detected: $default_branch"
+
+    local zip_url="${repo_url}/archive/refs/heads/${default_branch}.zip"
+
+    if command -v curl >/dev/null 2>&1; then
+        curl -fsSL -o "$out_file" "$zip_url"
+    else
+        wget -q -O "$out_file" "$zip_url"
     fi
 }
 
 # Helper function to detect Firefox Installation Directory
 get_firefox_install_dir() {
     local ff_dir=""
-    
+
     # 1. Detect from OS
     if [[ "$OSTYPE" == "darwin"* ]]; then
         # macOS standard path
         local mac_path="/Applications/Firefox.app/Contents/Resources"
         if [[ -d "$mac_path" ]]; then
             ff_dir="$mac_path"
-            echo " -> Detected Firefox directory on macOS: $ff_dir"
+            echo " -> Detected Firefox directory on macOS: $ff_dir" >&2
         fi
     else
         # Linux standard paths
@@ -98,15 +120,15 @@ get_firefox_install_dir() {
         for p in "${linux_paths[@]}"; do
             if [[ -d "$p" ]]; then
                 ff_dir="$p"
-                echo " -> Detected Firefox directory on Linux: $ff_dir"
+                echo " -> Detected Firefox directory on Linux: $ff_dir" >&2
                 break
             fi
         done
     fi
-    
+
     if [[ -z "$ff_dir" ]]; then
-        echo -e "\033[1;33m[WARNING] Could not automatically locate Firefox installation folder.\033[0m"
-        read -p "Please enter the Firefox installation path manually (where config.js should be placed): " ff_dir
+        echo -e "\033[1;33m[WARNING] Could not automatically locate Firefox installation folder.\033[0m" >&2
+        read -p "Please enter the Firefox installation path manually (where config.js should be placed): " ff_dir </dev/tty
         ff_dir="${ff_dir%\"}"
         ff_dir="${ff_dir#\"}"
         ff_dir="${ff_dir%\'}"
@@ -117,7 +139,7 @@ get_firefox_install_dir() {
             exit 1
         fi
     fi
-    
+
     echo "$ff_dir"
 }
 
@@ -152,21 +174,23 @@ choose_profile() {
     local ff_dir="$1"
     local firefox_data_dir=""
     local profiles_ini=""
-    
+
     if [[ "$OSTYPE" == "darwin"* ]]; then
         firefox_data_dir="$HOME/Library/Application Support/Firefox"
     else
         # Linux standard & Flatpak support
         if [[ -d "$HOME/.mozilla/firefox" ]]; then
             firefox_data_dir="$HOME/.mozilla/firefox"
+        elif [[ -d "$HOME/.config/mozilla/firefox" ]]; then
+            firefox_data_dir="$HOME/.config/mozilla/firefox"
         elif [[ -d "$HOME/.var/app/org.mozilla.firefox/.mozilla/firefox" ]]; then
             firefox_data_dir="$HOME/.var/app/org.mozilla.firefox/.mozilla/firefox"
         fi
     fi
-    
+
     if [[ -z "$firefox_data_dir" ]]; then
-        echo -e "\033[1;33m[WARNING] Could not automatically locate Firefox profile folder.\033[0m"
-        read -p "Please enter your profile path manually: " profile_dir
+        echo -e "\033[1;33m[WARNING] Could not automatically locate Firefox profile folder.\033[0m" >&2
+        read -p "Please enter your profile path manually: " profile_dir </dev/tty
         profile_dir="${profile_dir%\"}"
         profile_dir="${profile_dir#\"}"
         profile_dir="${profile_dir%\'}"
@@ -179,13 +203,13 @@ choose_profile() {
         echo "$profile_dir"
         return
     fi
-    
+
     profiles_ini="$firefox_data_dir/profiles.ini"
-    
+
     local names=()
     local paths=()
     local is_defaults=()
-    
+
     # 1. Discover local portable profiles
     if [[ -d "$ff_dir/profile" ]]; then
         names+=("Local Portable / Scoop Profile")
@@ -196,14 +220,14 @@ choose_profile() {
         paths+=("$ff_dir/Data/profile")
         is_defaults+=("1")
     fi
-    
+
     # 2. Parse profiles.ini
     if [[ -f "$profiles_ini" ]]; then
         local current_name=""
         local current_path=""
         local current_is_relative=""
         local current_default=""
-        
+
         while IFS= read -r line || [[ -n "$line" ]]; do
             line=$(echo "$line" | tr -d '\r' | xargs)
             if [[ "$line" =~ ^\[Profile ]]; then
@@ -229,8 +253,8 @@ choose_profile() {
             elif [[ "$line" =~ ^Default= ]]; then
                 current_default="${line#Default=}"
             fi
-        done < "$profiles_ini"
-        
+        done <"$profiles_ini"
+
         # Add last section
         if [[ -n "$current_name" && -n "$current_path" ]]; then
             names+=("$current_name")
@@ -242,7 +266,7 @@ choose_profile() {
             is_defaults+=("$current_default")
         fi
     fi
-    
+
     # 3. Fallback: Check Profiles directory directly if parsing profiles.ini yielded nothing
     if [[ ${#names[@]} -eq 0 ]]; then
         local profiles_folder="$firefox_data_dir/Profiles"
@@ -262,10 +286,10 @@ choose_profile() {
             done
         fi
     fi
-    
+
     if [[ ${#names[@]} -eq 0 ]]; then
-        echo -e "\033[1;33m[WARNING] No Firefox profiles discovered automatically.\033[0m"
-        read -p "Please enter your profile path manually: " profile_dir
+        echo -e "\033[1;33m[WARNING] No Firefox profiles discovered automatically.\033[0m" >&2
+        read -p "Please enter your profile path manually: " profile_dir </dev/tty
         profile_dir="${profile_dir%\"}"
         profile_dir="${profile_dir#\"}"
         profile_dir="${profile_dir%\'}"
@@ -278,27 +302,27 @@ choose_profile() {
         echo "$profile_dir"
         return
     fi
-    
-    echo -e "\nDiscovered Firefox Profiles:"
+
+    echo -e "\nDiscovered Firefox Profiles:" >&2
     for i in "${!names[@]}"; do
         local def_tag=""
         if [[ "${is_defaults[$i]}" == "1" ]]; then
             def_tag=" (Active Default)"
         fi
-        echo -e "  [$((i+1))] Profile '${names[$i]}'$def_tag"
-        echo -e "      Path: ${paths[$i]}"
+        echo -e "  [$((i + 1))] Profile '${names[$i]}'$def_tag" >&2
+        echo -e "      Path: ${paths[$i]}" >&2
     done
-    echo -e "  [$(( ${#names[@]} + 1 ))] Enter a custom profile path..."
-    
+    echo -e "  [$((${#names[@]} + 1))] Enter a custom profile path..." >&2
+
     local selection=""
     while [[ -z "$selection" ]]; do
-        read -p "Select a profile folder (1-$(( ${#names[@]} + 1 ))): " input_val
+        read -p "Select a profile folder (1-$((${#names[@]} + 1))): " input_val </dev/tty
         if [[ "$input_val" =~ ^[0-9]+$ ]]; then
             local idx=$((input_val - 1))
             if [[ $idx -ge 0 && $idx -lt ${#names[@]} ]]; then
                 selection="${paths[$idx]}"
             elif [[ $idx -eq ${#names[@]} ]]; then
-                read -p "Please enter the custom profile path manually: " custom_path
+                read -p "Please enter the custom profile path manually: " custom_path </dev/tty
                 custom_path="${custom_path%\"}"
                 custom_path="${custom_path#\"}"
                 custom_path="${custom_path%\'}"
@@ -307,16 +331,16 @@ choose_profile() {
                 if [[ -d "$custom_path" ]]; then
                     selection="$custom_path"
                 else
-                    echo -e "\033[1;31m[ERROR] Directory does not exist: $custom_path\033[0m"
+                    echo -e "\033[1;31m[ERROR] Directory does not exist: $custom_path\033[0m" >&2
                 fi
             fi
         fi
         if [[ -z "$selection" ]]; then
-            echo -e "\033[1;31mInvalid selection. Please try again.\033[0m"
+            echo -e "\033[1;31mInvalid selection. Please try again.\033[0m" >&2
         fi
     done
-    
-    echo -e "\n-> Selected Profile Path: $selection"
+
+    echo -e "\n-> Selected Profile Path: $selection" >&2
     echo "$selection"
 }
 
@@ -335,7 +359,7 @@ echo "=========================================================="
 
 menu_choice=""
 while [[ ! "$menu_choice" =~ ^[1-3]$ ]]; do
-    read -p "Enter your choice (1-3): " menu_choice
+    read -p "Enter your choice (1-3): " menu_choice </dev/tty
 done
 
 if [ "$menu_choice" = "3" ]; then
@@ -469,7 +493,7 @@ if [ "$menu_choice" = "1" ]; then
 
     # SUCCESS MESSAGE
     echo "=========================================================="
-    echo -e "\033[1;32m            INSTALLATION COMPLETED SUCCESSFULLY!          \033[0m"
+    echo -e "\033[1;32m         INSTALLATION COMPLETED SUCCESSFULLY!           \033[0m"
     echo "=========================================================="
     echo "Next steps to activate your customizations:"
     echo "1. Launch Firefox."
@@ -506,7 +530,7 @@ if [ "$menu_choice" = "2" ]; then
 
     # 2. Remove profile custom files
     echo -e "\n[2/3] Removing custom profile modifications..."
-    
+
     # Remove user.js
     if [ -f "$profileDir/user.js" ]; then
         rm -f "$profileDir/user.js"
@@ -555,7 +579,7 @@ if [ "$menu_choice" = "2" ]; then
         rm -f "$jsDir/blurNewTabUrlbar.uc.js"
         rm -rf "$jsDir/second_sidebar"
         echo "    -> Removed specific customization files in: $jsDir"
-        
+
         # If chrome/JS/ is empty, remove it too
         if [ -z "$(ls -A "$jsDir")" ]; then
             rm -rf "$jsDir"
