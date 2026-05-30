@@ -32,6 +32,9 @@ user_pref("ui.key.menuAccessKeyFocuses", false);
 user_pref("widget.gtk.rounded-bottom-corners.enabled", true);
 user_pref("widget.gtk.ignore-bogus-leave-notify", 1);
 
+/* Enable PWA */
+user_pref("browser.taskbarTabs.enabled", true);
+
 /****************************************************************************
  * 2. URLBAR, SEARCH & NEW TAB CLEANUP                                     *
  ****************************************************************************/
