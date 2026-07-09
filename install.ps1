@@ -417,10 +417,10 @@ if ($menuChoice -eq "1") {
     }
 
     # Copy blurNewTabUrlbar.uc.mjs to chrome/JS/ folder
-    if (Test-Path "$nhattPath\src\blurNewTabUrlbar.uc.mjs") {
-        Copy-Item -Path "$nhattPath\src\blurNewTabUrlbar.uc.mjs" -Destination $jsDestDir -Force
-        Write-Host "    -> Deployed blurNewTabUrlbar.uc.mjs to chrome\JS\ successfully." -ForegroundColor Green
-    }
+    # if (Test-Path "$nhattPath\src\blurNewTabUrlbar.uc.mjs") {
+    #     Copy-Item -Path "$nhattPath\src\blurNewTabUrlbar.uc.mjs" -Destination $jsDestDir -Force
+    #     Write-Host "    -> Deployed blurNewTabUrlbar.uc.mjs to chrome\JS\ successfully." -ForegroundColor Green
+    # }
 
     # Copy custom chrome contents to profile chrome/ folder
     if (Test-Path "$nhattPath\chrome") {
@@ -526,8 +526,8 @@ elseif ($menuChoice -eq "2") {
     if (Test-Path $jsDir) {
         $filesToRemove = @(
             "second_sidebar.uc.mjs",
-            "blurNewTabUrlbar.uc.mjs",
-            "blurNewTabUrlbar.uc.js"
+            # "blurNewTabUrlbar.uc.mjs",
+            # "blurNewTabUrlbar.uc.js"
         )
         foreach ($file in $filesToRemove) {
             $filePath = Join-Path -Path $jsDir -ChildPath $file

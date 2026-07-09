@@ -469,10 +469,10 @@ if [ "$menu_choice" = "1" ]; then
     fi
 
     # Copy blurNewTabUrlbar.uc.mjs to chrome/JS/
-    if [ -f "$nhattRoot/src/blurNewTabUrlbar.uc.mjs" ]; then
-        cp -f "$nhattRoot/src/blurNewTabUrlbar.uc.mjs" "$chromeDir/JS/blurNewTabUrlbar.uc.mjs"
-        echo "    -> Deployed blurNewTabUrlbar.uc.mjs to chrome/JS/ successfully."
-    fi
+    # if [ -f "$nhattRoot/src/blurNewTabUrlbar.uc.mjs" ]; then
+    #     cp -f "$nhattRoot/src/blurNewTabUrlbar.uc.mjs" "$chromeDir/JS/blurNewTabUrlbar.uc.mjs"
+    #     echo "    -> Deployed blurNewTabUrlbar.uc.mjs to chrome/JS/ successfully."
+    # fi
 
     # Copy custom chrome contents to profile chrome/ folder
     if [ -d "$nhattRoot/chrome" ]; then
@@ -575,8 +575,8 @@ if [ "$menu_choice" = "2" ]; then
     jsDir="${chromeDir}/JS"
     if [ -d "$jsDir" ]; then
         rm -f "$jsDir/second_sidebar.uc.mjs"
-        rm -f "$jsDir/blurNewTabUrlbar.uc.mjs"
-        rm -f "$jsDir/blurNewTabUrlbar.uc.js"
+        # rm -f "$jsDir/blurNewTabUrlbar.uc.mjs"
+        # rm -f "$jsDir/blurNewTabUrlbar.uc.js"
         rm -rf "$jsDir/second_sidebar"
         echo "    -> Removed specific customization files in: $jsDir"
 

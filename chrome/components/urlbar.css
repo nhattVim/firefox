@@ -23,6 +23,7 @@
         opacity: 0;
         transform: translateX(-50%) translateY(-10px) scale(0.98);
     }
+
     to {
         opacity: 1;
         transform: translateX(-50%) translateY(0) scale(1);
@@ -30,7 +31,7 @@
 }
 
 /* Floating Urlbar Layout when focused */
-#urlbar[focused] {
+#urlbar[open] {
     position: fixed !important;
     top: 15vh !important;
     left: 50% !important;
@@ -44,10 +45,10 @@
     animation: spotlightFadeIn 0.15s ease-out forwards;
 }
 
-#urlbar[focused] > #urlbar-background {
+#urlbar[open]>#urlbar-background {
     background-color: var(--urlbar-focused-bg) !important;
-    box-shadow: 
-        0 0 0 100vmax var(--urlbar-focused-backdrop), 
+    box-shadow:
+        0 0 0 100vmax var(--urlbar-focused-backdrop),
         0 20px 40px rgba(0, 0, 0, 0.4) !important;
     border: 1px solid var(--urlbar-focused-border) !important;
     backdrop-filter: blur(20px) !important;
@@ -55,14 +56,14 @@
 }
 
 /* Input container size and padding inside the floating bar */
-#urlbar[focused] > #urlbar-input-container {
+#urlbar[open]>#urlbar-input-container {
     height: 48px !important;
     padding-block: 0px !important;
     padding-inline: 12px !important;
 }
 
 /* Increase font size slightly in floating mode */
-#urlbar[focused] .urlbar-input {
+#urlbar[open] .urlbar-input {
     font-size: 16px !important;
 }
 
@@ -73,13 +74,13 @@
 }
 
 /* Spotlight Mode: Dim & Blur surrounding elements */
-:root:has(#urlbar[focused]) #browser,
-:root:has(#urlbar[focused]) #TabsToolbar {
+:root:has(#urlbar[open]) #browser,
+:root:has(#urlbar[open]) #TabsToolbar {
     filter: blur(6px) brightness(0.6) !important;
 }
 
 /* Dim other navigation bar elements (buttons, extensions, etc.) */
-:root:has(#urlbar[focused]) #nav-bar :is(toolbarbutton, #urlbar-container ~ *) {
+:root:has(#urlbar[open]) #nav-bar :is(toolbarbutton, #urlbar-container ~ *) {
     opacity: 0.25 !important;
 }
 
