@@ -525,9 +525,9 @@ elseif ($menuChoice -eq "2") {
     $jsDir = Join-Path -Path $chromeDir -ChildPath "JS"
     if (Test-Path $jsDir) {
         $filesToRemove = @(
-            "second_sidebar.uc.mjs",
             # "blurNewTabUrlbar.uc.mjs",
-            # "blurNewTabUrlbar.uc.js"
+            # "blurNewTabUrlbar.uc.js",
+            "second_sidebar.uc.mjs"
         )
         foreach ($file in $filesToRemove) {
             $filePath = Join-Path -Path $jsDir -ChildPath $file
