@@ -18,10 +18,12 @@
 
     /* Wallpaper */
     :root[lwt-newtab-brighttext] body {
+        background-position: center !important;
         background-image: url("imgs/dark.jpg") !important;
     }
 
     :root:not([lwt-newtab-brighttext]) body {
+        background-position: center !important;
         background-image: url("imgs/light.jpg") !important;
     }
 
